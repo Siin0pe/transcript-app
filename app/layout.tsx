@@ -25,19 +25,19 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
     >
-      <body>
+      <body className="flex min-h-svh flex-col">
         <ThemeProvider 
           attribute="class" 
           defaultTheme="light" 
           enableSystem
           disableTransitionOnChange
         >
-          <header className="flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-            <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+          <header className="sticky top-0 z-10 flex h-12 shrink-0 items-center border-b bg-background">
+            <div className="mx-auto flex w-full max-w-6xl items-center gap-1 px-4 lg:gap-2 lg:px-6">
               <h1 className="text-base font-medium tracking-tight text-slate-900 dark:text-white flex items-center">
                 Transcript<span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500 font-semibold">.IO</span>
               </h1>
-              <div className="ml-6 flex items-center gap-2">
+              <div className="ml-6 hidden items-center gap-2 sm:flex">
                 <Button variant="ghost">Ghost</Button>
                 <Button variant="ghost">Ghost</Button>
                 <Button variant="ghost">Ghost</Button>
@@ -48,10 +48,16 @@ export default function RootLayout({
             </div>
           </header>
           {children}
-          <footer className="relative flex h-12 shrink-0 items-center justify-center px-4 border-t transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)"> 
-            <div className="absolute left-1/2 -translate-x-1/2 flex items-center text-xs text-slate-500 dark:text-slate-400">
-              <span>© 2026 <Link href="https://github.com/Siin0pe" className="text-red-500 dark:text-red-300">Siin0pe</Link></span>
-            </div>
+          <footer className="flex h-12 shrink-0 items-center justify-center border-t px-4 text-xs text-muted-foreground">
+            <span>
+              © 2026{" "}
+              <Link
+                href="https://github.com/Siin0pe"
+                className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-pink-500 hover:opacity-80 transition-opacity"
+              >
+                Siin0pe
+              </Link>
+            </span>
           </footer>
         </ThemeProvider>
       </body>
