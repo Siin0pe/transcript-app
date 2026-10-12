@@ -3,10 +3,19 @@
 import { useEffect, useRef, useState } from "react"
 import type { BrowserWhisper } from "browser-whisper"
 
-export type WhisperStatus = "idle" | "loading" | "recording" | "transcribing"
-export type WhisperError = "mic-denied" | "failed"
+type WhisperStatus = "idle" | "loading" | "recording" | "transcribing"
+type WhisperError = "mic-denied" | "failed"
 
 const MODEL = "whisper-tiny"
+
+let whisperPromise: Promise<BrowserWhisper> | null = null
+
+async function createWhisper(onProgress: (progress: number) => void) {
+  const { BrowserWhisper } = await import("browser-whisper")
+  const whisper = new BrowserWhisper({ model: MODEL })
+  await whisper.downloadModel({ model: MODEL, onProgress: (e) => onProgress(e.progress) })
+  return whisper
+}
 
 export function useWhisper(language: string | undefined, onText: (text: string) => void) {
   const [status, setStatus] = useState<WhisperStatus>("idle")
@@ -14,38 +23,51 @@ export function useWhisper(language: string | undefined, onText: (text: string) 
   const [seconds, setSeconds] = useState(0)
   const [error, setError] = useState<WhisperError | null>(null)
 
-  const whisperRef = useRef<BrowserWhisper | null>(null)
   const recorderRef = useRef<MediaRecorder | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const startingRef = useRef(false)
+  const mountedRef = useRef(true)
 
   useEffect(() => {
+    mountedRef.current = true
     return () => {
+      mountedRef.current = false
       if (timerRef.current) clearInterval(timerRef.current)
       if (recorderRef.current) {
         recorderRef.current.onstop = null
         recorderRef.current.stream.getTracks().forEach((track) => track.stop())
       }
-      whisperRef.current?.dispose()
     }
   }, [])
 
   async function loadModel() {
-    if (whisperRef.current) return whisperRef.current
-
-    setProgress(0)
-    setStatus("loading")
-    const { BrowserWhisper } = await import("browser-whisper")
-    const whisper = new BrowserWhisper({ model: MODEL })
-    await whisper.downloadModel({ model: MODEL, onProgress: (e) => setProgress(e.progress) })
-    whisperRef.current = whisper
-    return whisper
+    if (!whisperPromise) {
+      setProgress(0)
+      setStatus("loading")
+      whisperPromise = createWhisper((value) => setProgress((current) => Math.max(current, value)))
+    }
+    try {
+      return await whisperPromise
+    } catch (err) {
+      whisperPromise = null
+      throw err
+    }
   }
 
   async function start() {
+    if (startingRef.current) return
+    startingRef.current = true
     setError(null)
+
     try {
       const whisper = await loadModel()
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+
+      if (!mountedRef.current) {
+        stream.getTracks().forEach((track) => track.stop())
+        return
+      }
+
       const recorder = new MediaRecorder(stream)
       const chunks: Blob[] = []
 
@@ -62,6 +84,8 @@ export function useWhisper(language: string | undefined, onText: (text: string) 
       timerRef.current = setInterval(() => setSeconds((s) => s + 1), 1000)
     } catch (err) {
       fail(err)
+    } finally {
+      startingRef.current = false
     }
   }
 
@@ -79,7 +103,7 @@ export function useWhisper(language: string | undefined, onText: (text: string) 
       await audioContext.close()
 
       const segments = await whisper.transcribePCM(audio.getChannelData(0), { language }).collect()
-      const text = segments.map((segment) => segment.text.trim()).join(" ")
+      const text = segments.map((segment) => segment.text.trim()).join(" ").trim()
       if (text) onText(text)
       setStatus("idle")
     } catch (err) {

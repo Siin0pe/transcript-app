@@ -22,18 +22,22 @@ export function Header({ lang, view }: Props) {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") setMenuOpen(false)
+      if (e.key === "Escape") closeMenu()
     }
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
   }, [])
+
+  function closeMenu() {
+    setMenuOpen(false)
+  }
 
   function toggleLang() {
     setLang(lang === "fr" ? "en" : "fr")
   }
 
   function toggleView() {
-    setMenuOpen(false)
+    closeMenu()
     setView(view === "mobile" ? "desktop" : "mobile")
   }
 
@@ -75,12 +79,12 @@ export function Header({ lang, view }: Props) {
 
       {menuOpen && (
         <div className="fixed inset-y-0 left-1/2 z-30 w-full max-w-md -translate-x-1/2 overflow-hidden desk:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMenuOpen(false)} />
+          <div className="absolute inset-0 bg-black/40" onClick={closeMenu} />
 
           <nav className="absolute inset-y-0 right-0 flex w-80 max-w-[85%] flex-col gap-6 border-l bg-background p-4 shadow-xl">
             <div className="flex items-center justify-between">
               <span className="text-lg font-semibold">{t.menu}</span>
-              <Button variant="ghost" size="icon" title={t.closeMenu} onClick={() => setMenuOpen(false)}>
+              <Button variant="ghost" size="icon" title={t.closeMenu} onClick={closeMenu}>
                 <X className="size-5" />
               </Button>
             </div>
@@ -89,16 +93,16 @@ export function Header({ lang, view }: Props) {
               <a
                 href="#editor"
                 className="flex min-h-12 items-center rounded-lg px-3 text-base font-medium hover:bg-muted"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
               >
-                {t.goEditor}
+                {t.newNote}
               </a>
               <a
                 href="#notes"
                 className="flex min-h-12 items-center rounded-lg px-3 text-base font-medium hover:bg-muted"
-                onClick={() => setMenuOpen(false)}
+                onClick={closeMenu}
               >
-                {t.goNotes}
+                {t.myNotes}
               </a>
             </div>
 

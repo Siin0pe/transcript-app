@@ -6,10 +6,10 @@ const client = createClient({ url: "file:transcript.db" })
 
 export const db = drizzle({ client })
 
-let initialized = false
+let initPromise: Promise<void> | null = null
 
-export async function initDb() {
-  if (initialized) return
+async function createTables() {
+  await client.execute("PRAGMA foreign_keys = ON")
 
   const result = await client.execute(
     "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'notes'"
@@ -18,7 +18,13 @@ export async function initDb() {
     const script = await readFile("db/init.sql", "utf8")
     await client.executeMultiple(script)
   }
-  initialized = true
+}
+
+export function initDb() {
+  if (!initPromise) {
+    initPromise = createTables()
+  }
+  return initPromise
 }
 
 export * from "./schema"

@@ -9,7 +9,7 @@ import type { Lang, View } from "@/lib/i18n"
 
 const ONE_YEAR = 60 * 60 * 24 * 365
 
-export interface NoteInput {
+interface NoteInput {
   id: number | null
   title: string
   content: string
@@ -17,22 +17,34 @@ export interface NoteInput {
   dictated: boolean
 }
 
+function isId(value: unknown): value is number {
+  return typeof value === "number" && Number.isInteger(value) && value > 0
+}
+
 export async function saveNote(note: NoteInput) {
+  if (typeof note.title !== "string" || typeof note.content !== "string") {
+    return false
+  }
+
   const title = note.title.trim()
   const content = note.content.trim()
-  if (title === "" || title.length > 255) {
+  if (title === "" || title.length > 255 || content.length > 50000) {
     return false
   }
 
   await initDb()
 
-  if (note.id) {
-    await db
+  const tagId = isId(note.tagId) ? note.tagId : null
+  const dictated = note.dictated === true
+
+  if (isId(note.id)) {
+    const result = await db
       .update(notes)
-      .set({ title, content, tagId: note.tagId, dictated: note.dictated, updatedAt: new Date() })
+      .set({ title, content, tagId, dictated })
       .where(eq(notes.id, note.id))
+    if (result.rowsAffected === 0) return false
   } else {
-    await db.insert(notes).values({ title, content, tagId: note.tagId, dictated: note.dictated })
+    await db.insert(notes).values({ title, content, tagId, dictated })
   }
 
   revalidatePath("/")
@@ -40,6 +52,7 @@ export async function saveNote(note: NoteInput) {
 }
 
 export async function deleteNote(id: number) {
+  if (!isId(id)) return
   await initDb()
   await db.delete(notes).where(eq(notes.id, id))
   revalidatePath("/")

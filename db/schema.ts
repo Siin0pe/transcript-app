@@ -18,8 +18,6 @@ export const notes = sqliteTable("notes", {
     .default(sql`(unixepoch())`),
   updatedAt: integer("updated_at", { mode: "timestamp" })
     .notNull()
-    .default(sql`(unixepoch())`),
+    .default(sql`(unixepoch())`)
+    .$onUpdate(() => new Date()),
 })
-
-export type Note = typeof notes.$inferSelect
-export type Tag = typeof tags.$inferSelect

@@ -9,7 +9,7 @@ export default async function Page() {
   const { lang } = await getPrefs()
   await initDb()
 
-  const noteRows = await db
+  const notesQuery = db
     .select({
       id: notes.id,
       title: notes.title,
@@ -23,8 +23,9 @@ export default async function Page() {
     .from(notes)
     .leftJoin(tags, eq(notes.tagId, tags.id))
     .orderBy(desc(notes.updatedAt), desc(notes.id))
+  const tagsQuery = db.select().from(tags).orderBy(tags.id)
 
-  const tagRows = await db.select().from(tags).orderBy(tags.id)
+  const [noteRows, tagRows] = await Promise.all([notesQuery, tagsQuery])
 
   const noteList: NoteItem[] = noteRows.map((row) => ({
     id: row.id,

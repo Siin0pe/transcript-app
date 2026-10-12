@@ -55,8 +55,12 @@ export function NotesBoard({ lang, notes, tags }: Props) {
       return
     }
     setDeletingId(null)
-    if (editingId === id) closeEditor()
-    await deleteNote(id)
+    try {
+      await deleteNote(id)
+      if (editingId === id) closeEditor()
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   return (

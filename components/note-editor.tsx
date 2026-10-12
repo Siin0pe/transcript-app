@@ -52,10 +52,10 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
 
   const whisper = useWhisper(dictationLang === "auto" ? undefined : dictationLang, addDictatedText)
 
-  const tagOptions = [{ value: "none", label: t.noTag }]
-  for (const tag of tags) {
-    tagOptions.push({ value: String(tag.id), label: tag.name })
-  }
+  const tagOptions = [
+    { value: "none", label: t.noTag },
+    ...tags.map((tag) => ({ value: String(tag.id), label: tag.name })),
+  ]
 
   const languageOptions = DICTATION_LANGUAGES.map((code) => ({ value: code, label: t.languages[code] }))
 
@@ -77,15 +77,15 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
     try {
       const saved = await saveNote({
         id: note ? note.id : null,
-        title: title,
-        content: content,
+        title,
+        content,
         tagId: tagId === "none" ? null : Number(tagId),
-        dictated: dictated,
+        dictated,
       })
       if (saved) {
         onDone()
       } else {
-        setTitleError(true)
+        setSaveError(true)
       }
     } catch {
       setSaveError(true)
@@ -168,11 +168,11 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
           {whisper.status === "loading" && (
             <div className="flex flex-col gap-2">
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{t.loadingModel}</span>
+                <span>{whisper.progress < 0.99 ? t.loadingModel : t.preparingModel}</span>
                 <span className="font-mono">{Math.round(whisper.progress * 100)} %</span>
               </div>
               <div className="h-1.5 rounded-full bg-muted">
-                <div className="h-full rounded-full bg-primary" style={{ width: whisper.progress * 100 + "%" }} />
+                <div className="h-full rounded-full bg-primary transition-[width] duration-300" style={{ width: whisper.progress * 100 + "%" }} />
               </div>
             </div>
           )}
@@ -196,8 +196,11 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
             </div>
           )}
 
-          {whisper.error === "mic-denied" && <p className="text-xs text-destructive mob:text-sm">{t.micDenied}</p>}
-          {whisper.error === "failed" && <p className="text-xs text-destructive mob:text-sm">{t.dictationFailed}</p>}
+          {whisper.error && (
+            <p className="text-xs text-destructive mob:text-sm">
+              {whisper.error === "mic-denied" ? t.micDenied : t.dictationFailed}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">

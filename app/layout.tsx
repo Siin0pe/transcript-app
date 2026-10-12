@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { ThemeProvider } from "next-themes"
-import { cn } from "cn"
 
 import "./globals.css"
 import { Header } from "@/components/header"
@@ -29,7 +28,7 @@ export default async function RootLayout({
       lang={lang}
       data-view={view}
       suppressHydrationWarning
-      className={cn("antialiased", geist.variable, geistMono.variable, "font-sans")}
+      className={`antialiased font-sans ${geist.variable} ${geistMono.variable}`}
     >
       <body className="flex min-h-svh flex-col desk:min-w-5xl mob:mx-auto mob:w-full mob:max-w-md mob:sm:border-x">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
