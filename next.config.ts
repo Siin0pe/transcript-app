@@ -1,7 +1,6 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  // browser-whisper needs cross-origin isolation for threaded WASM
   headers() {
     return [
       {

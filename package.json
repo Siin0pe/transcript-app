@@ -7,24 +7,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "db:push": "drizzle-kit push",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
-    "db:setup": "docker compose up -d && drizzle-kit push"
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "db:reset": "node -e \"require('fs').rmSync('transcript.db',{force:true})\""
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@libsql/client": "^0.18.0",
     "browser-whisper": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.3.0",
-    "dotenv": "^17.4.2",
     "drizzle-orm": "^1.0.0-rc.4",
     "lucide-react": "^1.47.0",
-    "mysql2": "^3.24.4",
     "next": "^16.3.8",
     "next-themes": "^0.4.6",
     "react": "19.2.8",
@@ -37,13 +31,9 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "drizzle-kit": "^1.0.0-rc.4",
-    "eslint": "^9.39.5",
-    "eslint-config-next": "16.3.4",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
-    "tsx": "^4.23.13",
     "typescript": "^5"
   }
 }

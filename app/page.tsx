@@ -1,35 +1,45 @@
-import { NoteEditor } from "@/components/note-editor"
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { desc, eq } from "drizzle-orm"
 
-export default function Page() {
-  return (
-    <main className="flex w-full max-w-6xl flex-1 flex-col gap-6 self-center px-4 py-4 sm:py-6 md:flex-row md:items-start lg:px-6">
-      <section className="order-last flex flex-col gap-3 md:sticky md:top-18 md:order-first md:max-h-[calc(100svh-6rem)] md:w-72 md:shrink-0 md:overflow-y-auto lg:w-80">
-        <div className="flex h-8 items-center">
-          <h2 className="text-base font-semibold tracking-tight">Mes notes</h2>
-        </div>
-        <div className="flex flex-col gap-3">
-          <Card size="sm">
-            <CardHeader>
-              <CardTitle>Titre de la note</CardTitle>
-              <CardDescription className="line-clamp-2">Aperçu du contenu…</CardDescription>
-            </CardHeader>
-          </Card>
-          <Card size="sm">
-            <CardHeader>
-              <CardTitle>Titre de la note</CardTitle>
-              <CardDescription className="line-clamp-2">Aperçu du contenu…</CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-      </section>
+import { NotesBoard, type NoteItem, type TagItem } from "@/components/notes-board"
+import { db, initDb, notes, tags } from "@/db"
+import { formatDate } from "@/lib/i18n"
+import { getPrefs } from "@/lib/prefs"
 
-      <NoteEditor />
-    </main>
-  )
+export default async function Page() {
+  const { lang } = await getPrefs()
+  await initDb()
+
+  const noteRows = await db
+    .select({
+      id: notes.id,
+      title: notes.title,
+      content: notes.content,
+      dictated: notes.dictated,
+      tagId: notes.tagId,
+      updatedAt: notes.updatedAt,
+      tagFr: tags.nameFr,
+      tagEn: tags.nameEn,
+    })
+    .from(notes)
+    .leftJoin(tags, eq(notes.tagId, tags.id))
+    .orderBy(desc(notes.updatedAt), desc(notes.id))
+
+  const tagRows = await db.select().from(tags).orderBy(tags.id)
+
+  const noteList: NoteItem[] = noteRows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    content: row.content,
+    dictated: row.dictated,
+    tagId: row.tagId,
+    tagName: lang === "fr" ? row.tagFr : row.tagEn,
+    date: formatDate(row.updatedAt, lang),
+  }))
+
+  const tagList: TagItem[] = tagRows.map((tag) => ({
+    id: tag.id,
+    name: lang === "fr" ? tag.nameFr : tag.nameEn,
+  }))
+
+  return <NotesBoard lang={lang} notes={noteList} tags={tagList} />
 }

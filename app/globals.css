@@ -3,6 +3,8 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant desk (&:is([data-view=desktop] *));
+@custom-variant mob (&:is([data-view=mobile] *));
 
 @theme inline {
     --font-heading: var(--font-sans);
@@ -125,5 +127,6 @@
     }
   html {
     @apply font-sans;
+    scrollbar-gutter: stable;
     }
 }

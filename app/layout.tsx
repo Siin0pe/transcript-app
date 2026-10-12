@@ -1,55 +1,45 @@
+import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
+import { ThemeProvider } from "next-themes"
+import { cn } from "cn"
 
 import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
-import { ModeToggle } from "@/components/mode-toggle";
-import Link from "next/link";
-  
-const geist = Geist({subsets:['latin'],variable:'--font-sans'})
+import { Header } from "@/components/header"
+import { dictionaries } from "@/lib/i18n"
+import { getPrefs } from "@/lib/prefs"
 
-const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })
 
-export default function RootLayout({
+export async function generateMetadata(): Promise<Metadata> {
+  const { lang } = await getPrefs()
+  return { title: "Transcript.IO", description: dictionaries[lang].description }
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const { lang, view } = await getPrefs()
+  const t = dictionaries[lang]
+
   return (
     <html
-      lang="en"
+      lang={lang}
+      data-view={view}
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
+      className={cn("antialiased", geist.variable, geistMono.variable, "font-sans")}
     >
-      <body className="flex min-h-svh flex-col">
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="light" 
-          enableSystem
-          disableTransitionOnChange
-        >
-          <header className="sticky top-0 z-10 flex h-12 shrink-0 items-center border-b bg-background">
-            <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 lg:px-6">
-              <h1 className="text-lg font-medium tracking-tight">
-                Transcript<span className="bg-linear-to-r from-indigo-500 to-pink-500 bg-clip-text font-semibold text-transparent">.IO</span>
-              </h1>
-              <ModeToggle />
-            </div>
-          </header>
+      <body className="flex min-h-svh flex-col desk:min-w-5xl mob:mx-auto mob:w-full mob:max-w-md mob:sm:border-x">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+          <Header lang={lang} view={view} />
           {children}
-          <footer className="flex h-12 shrink-0 items-center justify-center border-t px-4 text-xs text-muted-foreground">
-            <span>
-              © 2026{" "}
-              <Link
-                href="https://github.com/Siin0pe"
-                className="font-medium text-transparent bg-clip-text bg-linear-to-r from-indigo-500 to-pink-500 hover:opacity-80 transition-opacity"
-              >
-                Siin0pe
-              </Link>
-            </span>
+          <footer className="border-t px-4 py-4 text-center text-sm text-muted-foreground">
+            © 2026 Siin0pe · {t.credit} ·{" "}
+            <a href="https://github.com/Siin0pe/transcript-app" className="underline">
+              {t.contact}
+            </a>
           </footer>
         </ThemeProvider>
       </body>
