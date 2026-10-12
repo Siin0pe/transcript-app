@@ -53,7 +53,7 @@ npm start
 ## Organisation des fichiers
 
 - `app/` : page (`page.tsx`), gabarit commun avec en-tête et pied de page (`layout.tsx`), styles (`globals.css`), actions serveur (`actions.ts`)
-- `components/` : en-tête et menu, éditeur de note, liste des notes, composants d'interface (`ui/`)
+- `components/` : en-tête et menu, liste des notes, carte d'une note, éditeur de note, bloc de dictée, composants d'interface (`ui/`)
 - `hooks/use-whisper.ts` : enregistrement du micro et transcription Whisper
 - `lib/` : textes français et anglais (`i18n.ts`), lecture des préférences langue et version (`prefs.ts`)
 - `db/` : connexion, schéma et script SQL d'initialisation
