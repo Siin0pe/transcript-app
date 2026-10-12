@@ -35,10 +35,7 @@ export default async function RootLayout({
           <Header lang={lang} view={view} />
           {children}
           <footer className="border-t px-4 py-4 text-center text-sm text-muted-foreground">
-            © 2026 Siin0pe · {t.credit} ·{" "}
-            <a href="https://github.com/Siin0pe/transcript-app" className="underline">
-              {t.contact}
-            </a>
+            © 2026 Siin0pe · {t.credit}
           </footer>
         </ThemeProvider>
       </body>

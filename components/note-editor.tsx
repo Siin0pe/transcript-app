@@ -91,9 +91,11 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
         <h2 className="text-base font-semibold tracking-tight mob:text-lg">
           {note ? t.editNote : t.newNote}
         </h2>
-        <span className="truncate text-xs text-muted-foreground mob:whitespace-normal mob:text-sm">
-          {note ? t.editHint(note.title) : t.draftHint}
-        </span>
+        {note && (
+          <span className="truncate text-xs text-muted-foreground mob:whitespace-normal mob:text-sm">
+            {t.editHint(note.title)}
+          </span>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-xl border bg-card p-4">
