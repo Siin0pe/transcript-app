@@ -87,17 +87,17 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
 
   return (
     <section id="editor" className="flex scroll-mt-24 flex-col gap-6">
-      <div className="flex flex-wrap items-end gap-2 md:flex-nowrap md:gap-4">
-        <h2 className="font-heading text-4xl leading-none font-extrabold uppercase dark:text-yellow-300">{note ? t.editNote : t.newNote}</h2>
+      <div className="flex flex-wrap items-end gap-2 @3xl:flex-nowrap @3xl:gap-4">
+        <h2 className="font-heading text-4xl leading-none font-extrabold uppercase dark:text-primary">{note ? t.editNote : t.newNote}</h2>
         {note && (
-          <span className="mb-1 min-w-0 basis-full text-lg font-semibold md:basis-auto md:truncate">
+          <span className="mb-1 min-w-0 basis-full text-lg font-semibold @3xl:basis-auto @3xl:truncate">
             {t.editHint(note.title)}
           </span>
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6 bg-neutral-950 p-4 text-neutral-100 md:p-6 dark:bg-neutral-900">
-        <div className="flex flex-col gap-6 md:flex-row">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6 bg-card p-4 text-card-foreground @3xl:p-6">
+        <div className="flex flex-col gap-6 @3xl:flex-row">
           <div className="flex flex-1 flex-col gap-2">
             <Label htmlFor="title">{t.title}</Label>
             <Input
@@ -108,10 +108,10 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
               autoComplete="off"
               onChange={handleTitleChange}
             />
-            {titleError && <p className="text-sm font-semibold text-rose-500">{t.titleRequired}</p>}
+            {titleError && <p className="text-sm font-semibold text-destructive">{t.titleRequired}</p>}
           </div>
 
-          <div className="flex flex-col gap-2 md:w-48">
+          <div className="flex flex-col gap-2 @3xl:w-48">
             <Label>{t.tag}</Label>
             <Select value={tagId} onValueChange={(value) => setTagId(value ?? "none")} items={tagOptions}>
               <SelectTrigger className="w-full">
@@ -146,16 +146,16 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
           />
         </div>
 
-        {saveError && <p className="text-sm font-semibold text-rose-500">{t.saveFailed}</p>}
+        {saveError && <p className="text-sm font-semibold text-destructive">{t.saveFailed}</p>}
 
-        <div className="flex flex-col items-stretch gap-3 md:flex-row md:items-center">
+        <div className="flex flex-col items-stretch gap-3 @3xl:flex-row @3xl:items-center">
           <Button type="submit" disabled={isBusy}>
             {saving ? t.saving : t.save}
           </Button>
           <Button type="button" variant="ghost" disabled={saving} onClick={onDone}>
             {t.cancel}
           </Button>
-          <span className="text-center text-sm text-neutral-400 md:ml-auto">{t.chars(content.length)}</span>
+          <span className="text-center text-sm text-muted-foreground @3xl:ml-auto">{t.chars(content.length)}</span>
         </div>
       </form>
     </section>

@@ -63,7 +63,7 @@ export function NotesBoard({ lang, notes, tags }: Props) {
 
   return (
     <main className="w-full flex-1">
-      <div className="flex flex-col gap-12 mx-auto max-w-6xl px-4 pt-8 md:px-6 md:pt-10">
+      <div className="flex flex-col gap-12 mx-auto max-w-6xl px-4 pt-8 @3xl:px-6 @3xl:pt-10">
         <NoteEditor
           key={`${editingId ?? "new"}-${formKey}`}
           lang={lang}
@@ -73,8 +73,8 @@ export function NotesBoard({ lang, notes, tags }: Props) {
         />
 
         <section id="notes" className="flex scroll-mt-24 flex-col gap-6">
-          <h2 className="font-heading text-4xl leading-none font-extrabold uppercase dark:text-yellow-300">
-            {t.myNotes} <span className="text-rose-600">{notes.length}</span>
+          <h2 className="font-heading text-4xl leading-none font-extrabold uppercase dark:text-primary">
+            {t.myNotes} <span className="text-destructive">{notes.length}</span>
           </h2>
 
           {notes.length === 0 && (
@@ -83,7 +83,7 @@ export function NotesBoard({ lang, notes, tags }: Props) {
             </p>
           )}
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 @3xl:grid-cols-2">
             {notes.map((note) => (
               <NoteCard
                 key={note.id}

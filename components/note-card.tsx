@@ -23,15 +23,15 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
     <article
       className={cn(
         "flex flex-col gap-3 border-2 p-5",
-        isEditing ? "bg-neutral-950 text-neutral-100 dark:bg-neutral-900" : "border-neutral-950 dark:border-yellow-300/50",
-        isDeleting ? "border-rose-600" : isEditing && "border-cyan-400"
+        isEditing ? "bg-card text-card-foreground" : "border-border",
+        isDeleting ? "border-destructive" : isEditing && "border-ring"
       )}
     >
       <div className="flex items-start gap-3">
         <h3 className="min-w-0 flex-1 font-heading text-3xl leading-[0.9] font-extrabold wrap-anywhere uppercase">
           {note.title}
         </h3>
-        <div className="-mt-1 -mr-1 flex shrink-0 gap-2 md:gap-1">
+        <div className="-mt-1 -mr-1 flex shrink-0 gap-2 @3xl:gap-1">
           <Button variant="ghost" size="icon-sm" title={t.edit} onClick={onEdit}>
             <Pencil />
           </Button>
@@ -44,7 +44,7 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
             <Button
               variant="ghost"
               size="icon-sm"
-              className="hover:text-rose-600"
+              className="hover:text-destructive"
               title={t.remove}
               onClick={onDelete}
             >
@@ -59,10 +59,10 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
       <div className="mt-auto flex flex-wrap items-center gap-2 pt-1 text-sm font-semibold uppercase">
         <span className="mr-auto tracking-wide opacity-70">{note.date}</span>
         {note.tagName && (
-          <span className="bg-yellow-300 px-2 py-0.5 tracking-wider text-neutral-950 ring-2 ring-neutral-950">{note.tagName}</span>
+          <span className="bg-primary px-2 py-0.5 tracking-wider text-primary-foreground ring-2 ring-border">{note.tagName}</span>
         )}
         {note.dictated && (
-          <span className="inline-flex items-center gap-1 bg-cyan-400 px-2 py-0.5 tracking-wider text-neutral-950">
+          <span className="inline-flex items-center gap-1 bg-ring px-2 py-0.5 tracking-wider text-primary-foreground">
             <Mic className="size-3.5" />
             {t.dictated}
           </span>

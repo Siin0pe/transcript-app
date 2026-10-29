@@ -50,27 +50,27 @@ export function Dictation({ lang, whisper, dictationLang, onDictationLangChange 
               ))}
             </SelectContent>
           </Select>
-          <span className="w-full text-sm text-neutral-400 md:w-auto">{t.whisperHint}</span>
+          <span className="w-full text-sm text-muted-foreground @3xl:w-auto">{t.whisperHint}</span>
         </div>
       )}
 
       {whisper.status === "loading" && (
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between gap-2 text-sm text-neutral-400">
+          <div className="flex justify-between gap-2 text-sm text-muted-foreground">
             <span>{whisper.progress < 0.99 ? t.loadingModel : t.preparingModel}</span>
             <span>{Math.round(whisper.progress * 100)} %</span>
           </div>
-          <div className="h-2 bg-neutral-800">
-            <div className="h-full bg-yellow-300 transition-[width] duration-300" style={{ width: whisper.progress * 100 + "%" }} />
+          <div className="h-2 bg-muted">
+            <div className="h-full bg-primary transition-[width] duration-300" style={{ width: whisper.progress * 100 + "%" }} />
           </div>
         </div>
       )}
 
       {whisper.status === "recording" && (
         <div className="flex items-center gap-3">
-          <span className="size-2.5 animate-pulse bg-rose-600" />
-          <span className="text-lg font-bold text-rose-500 tabular-nums">{formatDuration(whisper.seconds)}</span>
-          <span className="hidden text-sm text-neutral-400 md:inline">{t.recording}</span>
+          <span className="size-2.5 animate-pulse bg-destructive" />
+          <span className="text-lg font-bold text-destructive tabular-nums">{formatDuration(whisper.seconds)}</span>
+          <span className="hidden text-sm text-muted-foreground @3xl:inline">{t.recording}</span>
           <Button type="button" variant="destructive" className="ml-auto" onClick={whisper.stop}>
             <Square className="fill-current" />
             {t.stop}
@@ -79,14 +79,14 @@ export function Dictation({ lang, whisper, dictationLang, onDictationLangChange 
       )}
 
       {whisper.status === "transcribing" && (
-        <div className="flex items-center gap-2 text-sm text-neutral-400">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <LoaderCircle className="size-4 animate-spin" />
           {t.transcribing}
         </div>
       )}
 
       {whisper.error && (
-        <p className="text-sm font-semibold text-rose-500">
+        <p className="text-sm font-semibold text-destructive">
           {whisper.error === "mic-denied" ? t.micDenied : t.dictationFailed}
         </p>
       )}
