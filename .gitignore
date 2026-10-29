@@ -33,3 +33,6 @@ next-env.d.ts
 /transcript.db*
 /transcript-app.tar.gz
 /dist/
+
+/AGENTS.md
+/CLAUDE.md

@@ -257,6 +257,5 @@ Le script utilise le Chromium de la machine (`/usr/bin/chromium`, ou le chemin d
 | `install.sh` | Installation VM |
 | `scripts/rapport.mjs` | Génère le rapport |
 | `README.md` | Documentation |
-| `AGENTS.md` | Généré par Next.js |
 | `rapport.pdf` | Rapport |
 | `app/favicon.ico` | Icône du site |
