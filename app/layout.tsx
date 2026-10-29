@@ -15,7 +15,7 @@ const rajdhani = Rajdhani({
 })
 const saira = Saira_Extra_Condensed({
   subsets: ["latin"],
-  weight: ["700", "800"],
+  weight: "800",
   variable: "--font-display",
 })
 

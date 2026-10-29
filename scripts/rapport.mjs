@@ -1,13 +1,8 @@
-import { mkdirSync, readFileSync } from "node:fs"
-import { tmpdir } from "node:os"
-import { join } from "node:path"
 import { chromium } from "playwright-core"
 
 const BASE_URL = process.env.SITE_URL ?? "http://localhost:3000"
 const CHROMIUM = process.env.CHROMIUM_PATH ?? "/usr/bin/chromium"
 const PROXY = process.env.https_proxy ?? process.env.HTTPS_PROXY
-const SHOTS = join(tmpdir(), "transcript-rapport")
-mkdirSync(SHOTS, { recursive: true })
 
 const browser = await chromium.launch({
   executablePath: CHROMIUM,
@@ -43,59 +38,57 @@ async function openPage({ lang = "fr", view = "desktop" } = {}) {
   return page
 }
 
-async function shot(page, name, options = {}) {
-  const path = join(SHOTS, name + ".jpg")
+async function shot(page, options = {}) {
   const target = options.element ? page.locator(options.element) : page
-  await target.screenshot({ path, type: "jpeg", quality: 75, fullPage: options.fullPage, animations: "disabled" })
-  return path
+  const image = await target.screenshot({ type: "jpeg", quality: 75, fullPage: options.fullPage, animations: "disabled" })
+  return "data:image/jpeg;base64," + image.toString("base64")
 }
 
 const figures = {}
 
 let page = await openPage()
-figures.home = await shot(page, "home", { fullPage: true })
+figures.home = await shot(page, { fullPage: true })
 
 await page.getByLabel("Titre").fill("Réunion de projet")
 await page.getByLabel("Contenu").fill("Points à voir : maquette de la page d'accueil, traduction anglaise et version mobile.")
-figures.form = await shot(page, "form", { element: "#editor" })
+figures.form = await shot(page, { element: "#editor" })
 
 await page.getByRole("button", { name: "Dicter" }).click()
 await page.getByText("Téléchargement du modèle").waitFor()
 await page.waitForTimeout(1500)
-figures.loading = await shot(page, "loading", { element: "#editor form" })
+figures.loading = await shot(page, { element: "#editor form" })
 await page.getByText("Enregistrement en cours").waitFor({ timeout: 180000 })
 await page.waitForTimeout(3200)
-figures.recording = await shot(page, "recording", { element: "#editor form" })
+figures.recording = await shot(page, { element: "#editor form" })
 await page.getByRole("button", { name: "Arrêter" }).click()
 await page.getByText("Transcription en cours").waitFor()
-figures.transcribing = await shot(page, "transcribing", { element: "#editor form" })
+figures.transcribing = await shot(page, { element: "#editor form" })
 await page.context().close()
 
 page = await openPage()
 await page.getByTitle("Modifier").nth(1).click()
 await page.getByTitle("Supprimer").nth(2).click()
 await page.evaluate(() => window.scrollTo(0, 0))
-figures.edit = await shot(page, "edit", { fullPage: true })
+figures.edit = await shot(page, { fullPage: true })
 await page.context().close()
 
 page = await openPage({ lang: "en" })
-figures.english = await shot(page, "english", { fullPage: true })
+figures.english = await shot(page, { fullPage: true })
 await page.context().close()
 
 page = await openPage({ view: "mobile" })
-figures.mobile = await shot(page, "mobile")
+figures.mobile = await shot(page)
 await page.getByTitle("Menu").click()
-figures.menu = await shot(page, "menu")
+figures.menu = await shot(page)
 await page.context().close()
 
 page = await openPage({ lang: "en", view: "mobile" })
-figures.mobileEnglish = await shot(page, "mobile-en")
+figures.mobileEnglish = await shot(page)
 await page.context().close()
 
-const img = (name) => "data:image/jpeg;base64," + readFileSync(figures[name]).toString("base64")
 
 const figure = (name, caption, height = "9cm") => `
-  <figure><img src="${img(name)}" style="max-height:${height}"><figcaption>${caption}</figcaption></figure>`
+  <figure><img src="${figures[name]}" style="max-height:${height}"><figcaption>${caption}</figcaption></figure>`
 
 const html = `<!doctype html>
 <html lang="fr">

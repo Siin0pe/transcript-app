@@ -23,12 +23,13 @@ export function Header({ lang, view }: Props) {
   const isDark = resolvedTheme === "dark"
 
   useEffect(() => {
+    if (!menuOpen) return
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") closeMenu()
+      if (e.key === "Escape") setMenuOpen(false)
     }
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [])
+  }, [menuOpen])
 
   function closeMenu() {
     setMenuOpen(false)
@@ -93,20 +94,19 @@ export function Header({ lang, view }: Props) {
               </div>
 
               <div className="flex flex-col">
-                <a
-                  href="#editor"
-                  className="flex min-h-14 items-center border-b border-primary/30 font-heading text-2xl font-bold uppercase hover:text-primary"
-                  onClick={closeMenu}
-                >
-                  {t.newNote}
-                </a>
-                <a
-                  href="#notes"
-                  className="flex min-h-14 items-center border-b border-primary/30 font-heading text-2xl font-bold uppercase hover:text-primary"
-                  onClick={closeMenu}
-                >
-                  {t.myNotes}
-                </a>
+                {[
+                  ["#editor", t.newNote],
+                  ["#notes", t.myNotes],
+                ].map(([href, label]) => (
+                  <a
+                    key={href}
+                    href={href}
+                    className="flex min-h-14 items-center border-b border-primary/30 font-heading text-2xl font-extrabold uppercase hover:text-primary"
+                    onClick={closeMenu}
+                  >
+                    {label}
+                  </a>
+                ))}
               </div>
 
               <div className="flex flex-col gap-3">

@@ -23,8 +23,8 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
     <article
       className={cn(
         "flex flex-col gap-3 border-2 p-5",
-        isEditing ? "bg-card text-card-foreground" : "border-border",
-        isDeleting ? "border-destructive" : isEditing && "border-ring",
+        isEditing && "bg-card text-card-foreground",
+        isDeleting ? "border-destructive" : isEditing ? "border-ring" : undefined,
       )}
     >
       <div className="flex items-start gap-3">
