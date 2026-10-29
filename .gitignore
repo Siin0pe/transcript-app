@@ -31,3 +31,5 @@ yarn-error.log*
 next-env.d.ts
 
 /transcript.db*
+/transcript-app.tar.gz
+/dist/

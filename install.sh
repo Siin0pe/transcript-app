@@ -1,52 +1,55 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-NODE_MAJOR=22
-APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKIP_SYSTEM=0
-
-for arg in "$@"; do
-  case "$arg" in
-    --skip-system) SKIP_SYSTEM=1 ;;
-    -h|--help) echo "Usage : ./install.sh [--skip-system]"; exit 0 ;;
-    *) echo "Option inconnue : $arg" >&2; exit 1 ;;
-  esac
-done
-
-log() { printf '\n\033[1;34m==> %s\033[0m\n' "$*"; }
+NODE_MAJOR=24
+RELEASE=v2.0.0
+ARCHIVE_URL="https://github.com/Siin0pe/transcript-app/releases/download/$RELEASE/transcript-app.tar.gz"
+ARCHIVE_SHA256=6afd413cfed97130fbc1312c42ad72ca8cb148ebcb5a316e1f5fded1396cb804
+APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/dist"
 
 if [ "$(id -u)" -eq 0 ]; then
   SUDO=""
-else
+elif command -v sudo >/dev/null; then
   SUDO="sudo"
+else
+  echo "Lancez ce script en root (su -), sudo n'est pas installé." >&2
+  exit 1
 fi
 
-cd "$APP_DIR"
+[ "$(uname -m)" = "x86_64" ] || { echo "Seules les machines Linux x86_64 sont prises en charge." >&2; exit 1; }
 
-if [ "$SKIP_SYSTEM" -eq 0 ]; then
-  [ -r /etc/debian_version ] || { echo "Script prévu pour Debian/Ubuntu (apt)." >&2; exit 1; }
-
-  node_ok=0
-  if command -v node >/dev/null; then
-    node -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit(a > 20 || (a === 20 && b >= 9) ? 0 : 1)' && node_ok=1
-  fi
-  if [ "$node_ok" -eq 0 ]; then
-    log "Node.js $NODE_MAJOR (NodeSource)"
-    $SUDO apt-get update
-    $SUDO apt-get install -y ca-certificates curl gnupg
-    curl -fsSL "https://deb.nodesource.com/setup_${NODE_MAJOR}.x" | $SUDO -E bash -
-    $SUDO apt-get install -y nodejs
-  fi
+if ! command -v curl >/dev/null || [ ! -e /etc/ssl/certs/ca-certificates.crt ]; then
+  echo "Installation de curl et des certificats (apt)"
+  $SUDO apt-get update
+  $SUDO apt-get install -y --no-install-recommends curl ca-certificates
 fi
 
-log "Versions"
-node -v
-npm -v
+node_ok() {
+  command -v node >/dev/null &&
+    node -e 'const [a, b] = process.versions.node.split(".").map(Number); process.exit(a > 20 || (a === 20 && b >= 9) ? 0 : 1)'
+}
 
-log "Dépendances npm"
-npm ci
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
 
-log "Build de production"
-npm run build
+if ! node_ok; then
+  base="https://nodejs.org/dist/latest-v${NODE_MAJOR}.x"
+  curl -fsSL "$base/SHASUMS256.txt" -o "$tmp/SHASUMS256.txt"
+  file="$(awk '/linux-x64\.tar\.gz$/ {print $2}' "$tmp/SHASUMS256.txt")"
+  echo "Téléchargement de ${file%-linux-x64.tar.gz}"
+  curl -fsSL "$base/$file" -o "$tmp/$file"
+  (cd "$tmp" && grep " $file\$" SHASUMS256.txt | sha256sum -c --quiet -)
+  $SUDO tar -xzf "$tmp/$file" -C /usr/local/bin --strip-components=2 "${file%.tar.gz}/bin/node"
+  rm -f "$tmp/$file"
+  hash -r
+fi
 
-log "Installé. Lancez le site avec : npm start   (http://localhost:3000)"
+echo "Téléchargement du site compilé ($RELEASE)"
+curl -fsSL "$ARCHIVE_URL" -o "$tmp/transcript-app.tar.gz"
+echo "$ARCHIVE_SHA256  $tmp/transcript-app.tar.gz" | sha256sum -c --quiet -
+rm -rf "$APP_DIR"
+mkdir -p "$APP_DIR"
+tar -xzf "$tmp/transcript-app.tar.gz" -C "$APP_DIR"
+
+echo "Node $(node -v) installé, site dans $APP_DIR."
+echo "Lancez-le avec : cd \"$APP_DIR\" && HOSTNAME=0.0.0.0 node server.js   (port 3000)"
