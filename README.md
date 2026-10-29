@@ -35,7 +35,7 @@ Le reste de cette section explique ce que font ces commandes et comment les fair
 
 La VM n'a que 500 Mo de disque. Or compiler un site Next.js demande environ 1,5 Go pendant l'installation : `node_modules` pèse 1,1 Go (Next.js seul fait 300 Mo avec son compilateur), plus le cache npm et Node.js lui-même. La compilation ne peut donc pas se faire sur la VM.
 
-Le site est compilé une fois sur ma machine avec `npm run bundle`, en mode `standalone` de Next.js (voir `next.config.ts`). Ce mode ne garde que les fichiers nécessaires pour faire tourner le site, sans tout `node_modules`. Le résultat, `transcript-app.tar.gz`, est compilé à partir exactement du code de ce dépôt et publié dans la [release v2.0.1](https://github.com/Siin0pe/transcript-app/releases/tag/v2.0.1).
+Le site est compilé une fois sur ma machine avec `npm run bundle`, en mode `standalone` de Next.js (voir `next.config.ts`). Ce mode ne garde que les fichiers nécessaires pour faire tourner le site, sans tout `node_modules`. Le résultat, `transcript-app.tar.gz`, est compilé à partir exactement du code de ce dépôt et publié dans la [release v2.2.0](https://github.com/Siin0pe/transcript-app/releases/tag/v2.2.0).
 
 Je n'ai pas de GitHub Actions : l'archive est compilée sur ma machine et envoyée à la main dans la release (voir [Recompiler l'archive](#recompiler-larchive)).
 
@@ -72,7 +72,7 @@ bash install.sh
 Le script `install.sh` :
 
 1. utilise `curl` ou `wget`, selon ce qui est installé ;
-2. télécharge le site compilé depuis la release v2.0.1, vérifie sa somme SHA-256 et l'extrait dans `dist/` ;
+2. télécharge le site compilé depuis la release v2.2.0, vérifie sa somme SHA-256 et l'extrait dans `dist/` ;
 3. télécharge Node.js 24 depuis nodejs.org, vérifie sa somme SHA-256 et ne garde que le binaire `node`, copié dans `dist/node`.
 
 On peut le relancer sans risque : il recrée `dist/` à chaque fois (ce qui remet aussi la base à zéro).
@@ -83,8 +83,8 @@ Les mêmes étapes à la main, dans le dossier du projet décompressé. Avec `cu
 
 ```bash
 # 1. Le site compilé
-wget -q https://github.com/Siin0pe/transcript-app/releases/download/v2.0.1/transcript-app.tar.gz
-echo "7fe8709415c59029af3655da20f0cbeccd452fc2df2ac4506d656bd72fa87f0c  transcript-app.tar.gz" | sha256sum -c -
+wget -q https://github.com/Siin0pe/transcript-app/releases/download/v2.2.0/transcript-app.tar.gz
+echo "0e2c288c449f83ee80e90ca81a342c2185a25ac0d3d5639d73e390a6c5bce164  transcript-app.tar.gz" | sha256sum -c -
 mkdir dist && tar -xzf transcript-app.tar.gz -C dist && rm transcript-app.tar.gz
 
 # 2. Node.js 24 : seul le binaire node est nécessaire (pas npm)
@@ -103,8 +103,8 @@ cd dist && HOSTNAME=0.0.0.0 ./node server.js
 
 L'archive du site compilé est publique et se télécharge aussi directement :
 
-- Lien : https://github.com/Siin0pe/transcript-app/releases/download/v2.0.1/transcript-app.tar.gz
-- SHA-256 : `7fe8709415c59029af3655da20f0cbeccd452fc2df2ac4506d656bd72fa87f0c`
+- Lien : https://github.com/Siin0pe/transcript-app/releases/download/v2.2.0/transcript-app.tar.gz
+- SHA-256 : `0e2c288c449f83ee80e90ca81a342c2185a25ac0d3d5639d73e390a6c5bce164`
 
 Il suffit ensuite de l'extraire dans `dist/` (étape 1 ci-dessus, sans le `wget`) et de faire les étapes 2 et 3.
 
@@ -181,13 +181,21 @@ npm run bundle
 npm start          # lance .next/standalone/server.js
 ```
 
+Régénérer `rapport.pdf` (captures prises avec Playwright sur le site lancé, base remise à zéro avant) :
+
+```bash
+SITE_URL=http://localhost:3000 npm run rapport
+```
+
+Le script utilise le Chromium de la machine (`/usr/bin/chromium`, ou le chemin donné dans `CHROMIUM_PATH`).
+
 ## Utilisation du site
 
 - **Écrire une note** : remplir le titre, choisir une étiquette si besoin, écrire le contenu puis cliquer sur « Enregistrer ».
 - **Dicter** : cliquer sur « Dicter » et choisir la langue de la dictée. La première fois, le modèle Whisper est téléchargé puis gardé en cache par le navigateur. Le navigateur demande l'accès au micro. Parler, puis cliquer sur « Arrêter » : le texte s'ajoute à la fin du contenu et la note est marquée « dictée ».
 - **Modifier** une note : icône crayon sur la carte. **Supprimer** : icône corbeille puis « Confirmer ».
 - **Langue** : bouton « EN » / « FR » dans l'en-tête (ou dans le menu en version mobile).
-- **Version mobile / bureau** : bouton « Version mobile » dans l'en-tête, ou « Version bureau » dans le menu de la version mobile. Le choix est retenu dans un cookie. Sans choix, le site prend la version qui correspond à l'appareil.
+- **Version mobile / bureau** : sans choix, le site s'adapte à la largeur de l'écran. Le bouton « Version mobile » de l'en-tête, ou « Version bureau » dans le menu, force une version ; le choix est retenu dans un cookie.
 - **Thème clair / sombre** : bouton soleil / lune.
 
 ## Fonctionnement de la dictée
@@ -247,6 +255,7 @@ npm start          # lance .next/standalone/server.js
 | `package-lock.json` | Généré par npm |
 | `.gitignore` | Exclusions Git |
 | `install.sh` | Installation VM |
+| `scripts/rapport.mjs` | Génère le rapport |
 | `README.md` | Documentation |
 | `AGENTS.md` | Généré par Next.js |
 | `rapport.pdf` | Rapport |
