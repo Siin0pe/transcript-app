@@ -5,7 +5,7 @@ import { ThemeProvider } from "next-themes"
 import "./globals.css"
 import { Header } from "@/components/header"
 import { dictionaries } from "@/lib/i18n"
-import { getPrefs } from "@/lib/prefs"
+import { getPrefs } from "@/actions/prefs"
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" })
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" })

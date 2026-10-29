@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { saveNote } from "@/app/actions"
+import { saveNote } from "@/actions/notes"
 import { Dictation } from "@/components/dictation"
 import type { NoteItem, TagItem } from "@/components/notes-board"
 import { Button } from "@/components/ui/button"

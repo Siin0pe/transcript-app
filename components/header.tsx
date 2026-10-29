@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Languages, Menu, Monitor, Moon, Smartphone, Sun, X } from "lucide-react"
 import { useTheme } from "next-themes"
 
-import { setLang, setView } from "@/app/actions"
+import { setLang, setView } from "@/actions/prefs"
 import { Button } from "@/components/ui/button"
 import { dictionaries, type Lang, type View } from "@/lib/i18n"
 

@@ -1,13 +1,50 @@
 "use server"
 
-import { eq } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
-import { cookies } from "next/headers"
 
-import { db, initDb, notes } from "@/db"
-import type { Lang, View } from "@/lib/i18n"
+import type { NoteItem, TagItem } from "@/components/notes-board"
+import { db, initDb, notes, tags } from "@/db"
+import { formatDate, type Lang } from "@/lib/i18n"
 
-const ONE_YEAR = 60 * 60 * 24 * 365
+export async function getNotes(lang: Lang) {
+  await initDb()
+
+  const notesQuery = db
+    .select({
+      id: notes.id,
+      title: notes.title,
+      content: notes.content,
+      dictated: notes.dictated,
+      tagId: notes.tagId,
+      updatedAt: notes.updatedAt,
+      tagFr: tags.nameFr,
+      tagEn: tags.nameEn,
+    })
+    .from(notes)
+    .leftJoin(tags, eq(notes.tagId, tags.id))
+    .orderBy(desc(notes.updatedAt), desc(notes.id))
+  const tagsQuery = db.select().from(tags).orderBy(tags.id)
+
+  const [noteRows, tagRows] = await Promise.all([notesQuery, tagsQuery])
+
+  const noteList: NoteItem[] = noteRows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    content: row.content,
+    dictated: row.dictated,
+    tagId: row.tagId,
+    tagName: lang === "fr" ? row.tagFr : row.tagEn,
+    date: formatDate(row.updatedAt, lang),
+  }))
+
+  const tagList: TagItem[] = tagRows.map((tag) => ({
+    id: tag.id,
+    name: lang === "fr" ? tag.nameFr : tag.nameEn,
+  }))
+
+  return { notes: noteList, tags: tagList }
+}
 
 interface NoteInput {
   id: number | null
@@ -56,14 +93,4 @@ export async function deleteNote(id: number) {
   await initDb()
   await db.delete(notes).where(eq(notes.id, id))
   revalidatePath("/")
-}
-
-export async function setLang(lang: Lang) {
-  const cookieStore = await cookies()
-  cookieStore.set("lang", lang, { maxAge: ONE_YEAR })
-}
-
-export async function setView(view: View) {
-  const cookieStore = await cookies()
-  cookieStore.set("view", view, { maxAge: ONE_YEAR })
 }

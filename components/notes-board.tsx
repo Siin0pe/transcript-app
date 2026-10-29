@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { deleteNote } from "@/app/actions"
+import { deleteNote } from "@/actions/notes"
 import { NoteCard } from "@/components/note-card"
 import { NoteEditor } from "@/components/note-editor"
 import { dictionaries, type Lang } from "@/lib/i18n"
