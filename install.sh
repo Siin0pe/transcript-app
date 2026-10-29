@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# Installe transcript-app sur une VM Debian/Ubuntu vierge (sans Node).
-# Usage : ./install.sh [--skip-system]
-#   --skip-system  n'installe pas Node (déjà présent, version >= 20.9)
 set -euo pipefail
 
 NODE_MAJOR=22
@@ -11,7 +8,7 @@ SKIP_SYSTEM=0
 for arg in "$@"; do
   case "$arg" in
     --skip-system) SKIP_SYSTEM=1 ;;
-    -h|--help) sed -n '2,4p' "$0"; exit 0 ;;
+    -h|--help) echo "Usage : ./install.sh [--skip-system]"; exit 0 ;;
     *) echo "Option inconnue : $arg" >&2; exit 1 ;;
   esac
 done
