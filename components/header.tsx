@@ -6,14 +6,13 @@ import { useTheme } from "next-themes"
 
 import { setLang, setView } from "@/actions/prefs"
 import { Button } from "@/components/ui/button"
-import { dictionaries, type Lang, type View } from "@/lib/i18n"
+import { dictionaries, type Lang } from "@/lib/i18n"
 
 interface Props {
   lang: Lang
-  view: View
 }
 
-export function Header({ lang, view }: Props) {
+export function Header({ lang }: Props) {
   const t = dictionaries[lang]
   const { resolvedTheme, setTheme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -36,9 +35,9 @@ export function Header({ lang, view }: Props) {
     setLang(lang === "fr" ? "en" : "fr")
   }
 
-  function toggleView() {
+  function chooseView(view: "mobile" | "desktop") {
     closeMenu()
-    setView(view === "mobile" ? "desktop" : "mobile")
+    setView(view)
   }
 
   function toggleTheme() {
@@ -46,21 +45,21 @@ export function Header({ lang, view }: Props) {
   }
 
   return (
-    <header className="panel sticky top-0 z-20 shrink-0 border-b-4 border-red">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 desk:px-6">
+    <header className="sticky top-0 z-20 shrink-0 border-b-4 border-rose-600 bg-neutral-950 text-neutral-100">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 md:px-6">
         <a
           href="#editor"
-          className="font-heading text-3xl font-extrabold text-yellow uppercase"
+          className="font-heading text-3xl font-extrabold text-yellow-300 uppercase"
         >
-          Transcript<span className="text-red">.IO</span>
+          Transcript<span className="text-rose-600">.IO</span>
         </a>
 
-        <div className="flex items-center gap-3 mob:hidden">
+        <div className="hidden items-center gap-3 md:flex">
           <Button variant="outline" title={t.switchLangLabel} onClick={toggleLang}>
             <Languages />
             {t.switchLangShort}
           </Button>
-          <Button variant="outline" onClick={toggleView}>
+          <Button variant="outline" onClick={() => chooseView("mobile")}>
             <Smartphone />
             {t.toMobile}
           </Button>
@@ -70,18 +69,18 @@ export function Header({ lang, view }: Props) {
           </Button>
         </div>
 
-        <Button variant="outline" size="icon" className="desk:hidden" title={t.menu} onClick={() => setMenuOpen(true)}>
+        <Button variant="outline" size="icon" className="md:hidden" title={t.menu} onClick={() => setMenuOpen(true)}>
           <Menu className="size-5" />
         </Button>
       </div>
 
       {menuOpen && (
-        <div className="fixed inset-y-0 left-1/2 z-30 w-full max-w-md -translate-x-1/2 overflow-hidden desk:hidden">
-          <div className="absolute inset-0 bg-ink/70" onClick={closeMenu} />
+        <div className="fixed inset-y-0 left-1/2 z-30 w-full max-w-md -translate-x-1/2 overflow-hidden md:hidden">
+          <div className="absolute inset-0 bg-neutral-950/70" onClick={closeMenu} />
 
-          <nav className="panel absolute inset-y-0 right-0 flex w-80 max-w-[85%] flex-col gap-8 border-l-4 border-yellow p-5">
+          <nav className="absolute inset-y-0 right-0 flex w-80 max-w-[85%] flex-col gap-8 border-l-4 border-yellow-300 bg-neutral-950 p-5 text-neutral-100">
             <div className="flex items-center justify-between">
-              <span className="font-heading text-3xl font-extrabold text-yellow uppercase">{t.menu}</span>
+              <span className="font-heading text-3xl font-extrabold text-yellow-300 uppercase">{t.menu}</span>
               <Button variant="ghost" size="icon" title={t.closeMenu} onClick={closeMenu}>
                 <X className="size-5" />
               </Button>
@@ -90,14 +89,14 @@ export function Header({ lang, view }: Props) {
             <div className="flex flex-col">
               <a
                 href="#editor"
-                className="flex min-h-14 items-center border-b border-border font-heading text-2xl font-bold uppercase hover:text-yellow"
+                className="flex min-h-14 items-center border-b border-yellow-300/30 font-heading text-2xl font-bold uppercase hover:text-yellow-300"
                 onClick={closeMenu}
               >
                 {t.newNote}
               </a>
               <a
                 href="#notes"
-                className="flex min-h-14 items-center border-b border-border font-heading text-2xl font-bold uppercase hover:text-yellow"
+                className="flex min-h-14 items-center border-b border-yellow-300/30 font-heading text-2xl font-bold uppercase hover:text-yellow-300"
                 onClick={closeMenu}
               >
                 {t.myNotes}
@@ -105,7 +104,7 @@ export function Header({ lang, view }: Props) {
             </div>
 
             <div className="flex flex-col gap-3">
-              <span className="text-sm font-bold tracking-widest text-muted-foreground uppercase">{t.settings}</span>
+              <span className="text-sm font-bold tracking-widest text-neutral-400 uppercase">{t.settings}</span>
               <Button variant="outline" className="justify-start" onClick={toggleLang}>
                 <Languages />
                 {t.switchLang}
@@ -114,7 +113,7 @@ export function Header({ lang, view }: Props) {
                 {isDark ? <Sun /> : <Moon />}
                 {isDark ? t.themeLight : t.themeDark}
               </Button>
-              <Button variant="outline" className="justify-start" onClick={toggleView}>
+              <Button variant="outline" className="justify-start" onClick={() => chooseView("desktop")}>
                 <Monitor />
                 {t.toDesktop}
               </Button>

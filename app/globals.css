@@ -2,120 +2,20 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-@custom-variant desk (&:is([data-view=desktop] *));
-@custom-variant mob (&:is([data-view=mobile] *));
+@custom-variant dark (&:where(.dark, .dark *));
+
+@custom-variant md {
+    @media (width >= 48rem) {
+        &:not([data-view=mobile] *) {
+            @slot;
+        }
+    }
+    &:is([data-view=desktop] *) {
+        @slot;
+    }
+}
 
 @theme inline {
-    --font-heading: var(--font-display);
-    --font-sans: var(--font-sans);
-    --color-yellow: var(--yellow);
-    --color-ink: var(--ink);
-    --color-red: var(--red);
-    --color-cyan: var(--cyan);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: 0;
-    --radius-md: 0;
-    --radius-lg: 0;
-    --radius-xl: 0;
-}
-
-:root {
-    --yellow: #f8ef00;
-    --ink: #0b0b0c;
-    --red: #ff003c;
-    --cyan: #00e5f0;
-
-    --background: var(--yellow);
-    --foreground: var(--ink);
-    --card: var(--yellow);
-    --card-foreground: var(--ink);
-    --popover: var(--ink);
-    --popover-foreground: var(--yellow);
-    --primary: var(--ink);
-    --primary-foreground: var(--yellow);
-    --secondary: color-mix(in oklab, var(--ink) 12%, var(--yellow));
-    --secondary-foreground: var(--ink);
-    --muted: color-mix(in oklab, var(--ink) 10%, var(--yellow));
-    --muted-foreground: color-mix(in oklab, var(--ink) 70%, var(--yellow));
-    --accent: var(--ink);
-    --accent-foreground: var(--yellow);
-    --destructive: var(--red);
-    --border: var(--ink);
-    --input: var(--ink);
-    --ring: var(--red);
-}
-
-.dark {
-    --background: var(--ink);
-    --foreground: #ece8d4;
-    --card: #141416;
-    --card-foreground: #ece8d4;
-    --primary: var(--yellow);
-    --primary-foreground: var(--ink);
-    --secondary: #1c1c1f;
-    --secondary-foreground: #ece8d4;
-    --muted: #1c1c1f;
-    --muted-foreground: #9b977f;
-    --accent: var(--yellow);
-    --accent-foreground: var(--ink);
-    --border: color-mix(in oklab, var(--yellow) 45%, transparent);
-    --input: color-mix(in oklab, var(--yellow) 60%, transparent);
-    --ring: var(--cyan);
-}
-
-@layer components {
-    .panel {
-        --background: var(--ink);
-        --foreground: #ece8d4;
-        --card: var(--ink);
-        --card-foreground: #ece8d4;
-        --primary: var(--yellow);
-        --primary-foreground: var(--ink);
-        --muted: #1c1c1f;
-        --muted-foreground: #a8a48c;
-        --accent: var(--yellow);
-        --accent-foreground: var(--ink);
-        --border: color-mix(in oklab, var(--yellow) 40%, transparent);
-        --input: var(--yellow);
-        --ring: var(--cyan);
-        background: var(--ink);
-        color: var(--foreground);
-    }
-
-    .dark .panel {
-        --background: #141416;
-        --card: #141416;
-        background: #141416;
-    }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
-  html {
-    @apply font-sans;
-    scrollbar-gutter: stable;
-    }
+    --font-sans: var(--font-rajdhani);
+    --font-heading: var(--font-saira);
 }
