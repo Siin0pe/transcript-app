@@ -195,7 +195,7 @@ Le script utilise le Chromium de la machine (`/usr/bin/chromium`, ou le chemin d
 - **Dicter** : cliquer sur « Dicter » et choisir la langue de la dictée. La première fois, le modèle Whisper est téléchargé puis gardé en cache par le navigateur. Le navigateur demande l'accès au micro. Parler, puis cliquer sur « Arrêter » : le texte s'ajoute à la fin du contenu et la note est marquée « dictée ».
 - **Modifier** une note : icône crayon sur la carte. **Supprimer** : icône corbeille puis « Confirmer ».
 - **Langue** : bouton « EN » / « FR » dans l'en-tête (ou dans le menu en version mobile).
-- **Version mobile / bureau** : sans choix, le site s'adapte à la largeur de l'écran. Le bouton « Version mobile » de l'en-tête, ou « Version bureau » dans le menu, force une version ; le choix est retenu dans un cookie.
+- **Version mobile / bureau** : le site s'adapte à la largeur de l'écran. Le bouton « Version mobile » (en-tête) ou « Version bureau » (menu) force l'autre version, retenue dans un cookie. Choisir la version qui correspond à l'écran supprime le cookie et le site redevient responsive.
 - **Thème clair / sombre** : bouton soleil / lune.
 
 ## Fonctionnement de la dictée

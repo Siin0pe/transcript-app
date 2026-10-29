@@ -19,7 +19,8 @@ export async function setLang(lang: Lang) {
   cookieStore.set("lang", lang, { maxAge: ONE_YEAR })
 }
 
-export async function setView(view: View) {
+export async function setView(view: View | null) {
   const cookieStore = await cookies()
-  cookieStore.set("view", view, { maxAge: ONE_YEAR })
+  if (view) cookieStore.set("view", view, { maxAge: ONE_YEAR })
+  else cookieStore.delete("view")
 }

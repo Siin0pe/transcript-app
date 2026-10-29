@@ -1,39 +1,39 @@
-import type { Metadata } from "next";
-import { Rajdhani, Saira_Extra_Condensed } from "next/font/google";
-import { ThemeProvider } from "next-themes";
-import { cn } from "cn";
+import type { Metadata } from "next"
+import { Rajdhani, Saira_Extra_Condensed } from "next/font/google"
+import { ThemeProvider } from "next-themes"
+import { cn } from "cn"
 
-import "./globals.css";
-import { Header } from "@/components/header";
-import { dictionaries } from "@/lib/i18n";
-import { getPrefs } from "@/actions/prefs";
+import "./globals.css"
+import { Header } from "@/components/header"
+import { dictionaries } from "@/lib/i18n"
+import { getPrefs } from "@/actions/prefs"
 
 const rajdhani = Rajdhani({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-sans",
-});
+})
 const saira = Saira_Extra_Condensed({
   subsets: ["latin"],
   weight: ["700", "800"],
   variable: "--font-display",
-});
+})
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { lang } = await getPrefs();
+  const { lang } = await getPrefs()
   return {
     title: "Transcript.IO",
     description: dictionaries[lang].description,
-  };
+  }
 }
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
-  const { lang, view } = await getPrefs();
-  const t = dictionaries[lang];
+  const { lang, view } = await getPrefs()
+  const t = dictionaries[lang]
 
   return (
     <html
@@ -42,12 +42,7 @@ export default async function RootLayout({
       className={`antialiased font-sans ${rajdhani.variable} ${saira.variable}`}
     >
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div
             className={cn(
               "@container flex min-h-svh flex-col",
@@ -73,5 +68,5 @@ export default async function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }
