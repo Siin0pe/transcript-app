@@ -35,7 +35,7 @@ Le reste de cette section explique ce que font ces commandes et comment les fair
 
 La VM n'a que 500 Mo de disque. Or compiler un site Next.js demande environ 1,5 Go pendant l'installation : `node_modules` pèse 1,1 Go (Next.js seul fait 300 Mo avec son compilateur), plus le cache npm et Node.js lui-même. La compilation ne peut donc pas se faire sur la VM.
 
-Le site est compilé une fois sur ma machine avec `npm run bundle`, en mode `standalone` de Next.js (voir `next.config.ts`). Ce mode ne garde que les fichiers nécessaires pour faire tourner le site, sans tout `node_modules`. Le résultat, `transcript-app.tar.gz`, est compilé à partir exactement du code de ce dépôt et publié dans la [release v2.2.2](https://github.com/Siin0pe/transcript-app/releases/tag/v2.2.2).
+Le site est compilé une fois sur ma machine avec `npm run bundle`, en mode `standalone` de Next.js (voir `next.config.ts`). Ce mode ne garde que les fichiers nécessaires pour faire tourner le site, sans tout `node_modules`. Le résultat, `transcript-app.tar.gz`, est compilé à partir exactement du code de ce dépôt et publié dans la [release v2.2.3](https://github.com/Siin0pe/transcript-app/releases/tag/v2.2.3).
 
 Je n'ai pas de GitHub Actions : l'archive est compilée sur ma machine et envoyée à la main dans la release (voir [Recompiler l'archive](#recompiler-larchive)).
 
@@ -72,7 +72,7 @@ bash install.sh
 Le script `install.sh` :
 
 1. utilise `curl` ou `wget`, selon ce qui est installé ;
-2. télécharge le site compilé depuis la release v2.2.2, vérifie sa somme SHA-256 et l'extrait dans `dist/` ;
+2. télécharge le site compilé depuis la release v2.2.3, vérifie sa somme SHA-256 et l'extrait dans `dist/` ;
 3. télécharge Node.js 24 depuis nodejs.org, vérifie sa somme SHA-256 et ne garde que le binaire `node`, copié dans `dist/node`.
 
 On peut le relancer sans risque : il recrée `dist/` à chaque fois (ce qui remet aussi la base à zéro).
@@ -83,8 +83,8 @@ Les mêmes étapes à la main, dans le dossier du projet décompressé. Avec `cu
 
 ```bash
 # 1. Le site compilé
-wget -q https://github.com/Siin0pe/transcript-app/releases/download/v2.2.2/transcript-app.tar.gz
-echo "cbb7a28a5a8999e6f2ec020384a56f5415088bdca58ad3afc6aaacfb2914b64e  transcript-app.tar.gz" | sha256sum -c -
+wget -q https://github.com/Siin0pe/transcript-app/releases/download/v2.2.3/transcript-app.tar.gz
+echo "b63d53d463613b2c22b43666f526ba40f653abd2051a0e6d3382754d72115229  transcript-app.tar.gz" | sha256sum -c -
 mkdir dist && tar -xzf transcript-app.tar.gz -C dist && rm transcript-app.tar.gz
 
 # 2. Node.js 24 : seul le binaire node est nécessaire (pas npm)
@@ -103,8 +103,8 @@ cd dist && HOSTNAME=0.0.0.0 ./node server.js
 
 L'archive du site compilé est publique et se télécharge aussi directement :
 
-- Lien : https://github.com/Siin0pe/transcript-app/releases/download/v2.2.2/transcript-app.tar.gz
-- SHA-256 : `cbb7a28a5a8999e6f2ec020384a56f5415088bdca58ad3afc6aaacfb2914b64e`
+- Lien : https://github.com/Siin0pe/transcript-app/releases/download/v2.2.3/transcript-app.tar.gz
+- SHA-256 : `b63d53d463613b2c22b43666f526ba40f653abd2051a0e6d3382754d72115229`
 
 Il suffit ensuite de l'extraire dans `dist/` (étape 1 ci-dessus, sans le `wget`) et de faire les étapes 2 et 3.
 

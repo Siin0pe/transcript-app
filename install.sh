@@ -2,9 +2,9 @@
 set -euo pipefail
 
 NODE_MAJOR=24
-RELEASE=v2.2.2
+RELEASE=v2.2.3
 ARCHIVE_URL="https://github.com/Siin0pe/transcript-app/releases/download/$RELEASE/transcript-app.tar.gz"
-ARCHIVE_SHA256=cbb7a28a5a8999e6f2ec020384a56f5415088bdca58ad3afc6aaacfb2914b64e
+ARCHIVE_SHA256=b63d53d463613b2c22b43666f526ba40f653abd2051a0e6d3382754d72115229
 APP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/dist"
 
 [ "$(uname -m)" = "x86_64" ] || { echo "Seules les machines Linux x86_64 sont prises en charge." >&2; exit 1; }
