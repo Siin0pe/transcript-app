@@ -1,19 +1,19 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import type { BrowserWhisper } from "browser-whisper"
 
 type WhisperStatus = "idle" | "loading" | "recording" | "transcribing"
 type WhisperError = "mic-denied" | "failed"
 
-const MODEL = "tiny"
+const MODEL = "whisper-tiny"
 
-type WhisperWeb = typeof import("@remotion/whisper-webgpu")
-
-let whisperPromise: Promise<WhisperWeb> | null = null
+let whisperPromise: Promise<BrowserWhisper> | null = null
 
 async function createWhisper(onProgress: (progress: number) => void) {
-  const whisper = await import("@remotion/whisper-webgpu")
-  await whisper.downloadWhisperModel({ model: MODEL, onProgress: (e) => onProgress(e.progress) })
+  const { BrowserWhisper } = await import("browser-whisper")
+  const whisper = new BrowserWhisper({ model: MODEL })
+  await whisper.downloadModel({ model: MODEL, onProgress: (e) => onProgress(e.progress) })
   return whisper
 }
 
@@ -95,12 +95,15 @@ export function useWhisper(language: string | undefined, onText: (text: string) 
     recorderRef.current = null
   }
 
-  async function transcribe(whisper: WhisperWeb, blob: Blob) {
+  async function transcribe(whisper: BrowserWhisper, blob: Blob) {
     setStatus("transcribing")
     try {
-      const channelWaveform = await whisper.resampleTo16Khz({ file: blob })
-      const result = await whisper.transcribe({ channelWaveform, model: MODEL, language })
-      const text = result.text.trim()
+      const audioContext = new AudioContext({ sampleRate: 16000 })
+      const audio = await audioContext.decodeAudioData(await blob.arrayBuffer())
+      await audioContext.close()
+
+      const segments = await whisper.transcribePCM(audio.getChannelData(0), { language }).collect()
+      const text = segments.map((segment) => segment.text.trim()).join(" ").trim()
       if (text) onText(text)
       setStatus("idle")
     } catch (err) {

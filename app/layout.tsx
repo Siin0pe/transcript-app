@@ -35,7 +35,16 @@ export default async function RootLayout({
           <Header lang={lang} view={view} />
           {children}
           <footer className="border-t px-4 py-4 text-center text-sm text-muted-foreground">
-            © 2026 Siin0pe · {t.credit}
+            © 2026{" "}
+            <a
+              href="https://github.com/Siin0pe"
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-4 hover:text-foreground"
+            >
+              Siin0pe
+            </a>{" "}
+            · {t.credit}
           </footer>
         </ThemeProvider>
       </body>
