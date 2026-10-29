@@ -46,18 +46,16 @@ export function Header({ lang, view }: Props) {
   }
 
   return (
-    <header className="sticky top-0 z-20 flex h-12 shrink-0 items-center border-b bg-background mob:h-14">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 desk:px-6">
-        <h1 className="text-lg font-medium tracking-tight mob:text-xl">
-          <a href="#editor">
-            Transcript
-            <span className="bg-linear-to-r from-indigo-500 to-pink-500 bg-clip-text font-semibold text-transparent">
-              .IO
-            </span>
-          </a>
-        </h1>
+    <header className="panel sticky top-0 z-20 shrink-0 border-b-4 border-red">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 desk:px-6">
+        <a
+          href="#editor"
+          className="font-heading text-3xl font-extrabold text-yellow uppercase"
+        >
+          Transcript<span className="text-red">.IO</span>
+        </a>
 
-        <div className="flex items-center gap-2 mob:hidden">
+        <div className="flex items-center gap-3 mob:hidden">
           <Button variant="outline" title={t.switchLangLabel} onClick={toggleLang}>
             <Languages />
             {t.switchLangShort}
@@ -67,8 +65,8 @@ export function Header({ lang, view }: Props) {
             {t.toMobile}
           </Button>
           <Button variant="outline" size="icon" title={t.themeToggle} onClick={toggleTheme}>
-            <Sun className="dark:hidden" />
-            <Moon className="hidden dark:block" />
+            <Sun className="hidden dark:block" />
+            <Moon className="dark:hidden" />
           </Button>
         </div>
 
@@ -79,27 +77,27 @@ export function Header({ lang, view }: Props) {
 
       {menuOpen && (
         <div className="fixed inset-y-0 left-1/2 z-30 w-full max-w-md -translate-x-1/2 overflow-hidden desk:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={closeMenu} />
+          <div className="absolute inset-0 bg-ink/70" onClick={closeMenu} />
 
-          <nav className="absolute inset-y-0 right-0 flex w-80 max-w-[85%] flex-col gap-6 border-l bg-background p-4 shadow-xl">
+          <nav className="panel absolute inset-y-0 right-0 flex w-80 max-w-[85%] flex-col gap-8 border-l-4 border-yellow p-5">
             <div className="flex items-center justify-between">
-              <span className="text-lg font-semibold">{t.menu}</span>
+              <span className="font-heading text-3xl font-extrabold text-yellow uppercase">{t.menu}</span>
               <Button variant="ghost" size="icon" title={t.closeMenu} onClick={closeMenu}>
                 <X className="size-5" />
               </Button>
             </div>
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col">
               <a
                 href="#editor"
-                className="flex min-h-12 items-center rounded-lg px-3 text-base font-medium hover:bg-muted"
+                className="flex min-h-14 items-center border-b border-border font-heading text-2xl font-bold uppercase hover:text-yellow"
                 onClick={closeMenu}
               >
                 {t.newNote}
               </a>
               <a
                 href="#notes"
-                className="flex min-h-12 items-center rounded-lg px-3 text-base font-medium hover:bg-muted"
+                className="flex min-h-14 items-center border-b border-border font-heading text-2xl font-bold uppercase hover:text-yellow"
                 onClick={closeMenu}
               >
                 {t.myNotes}
@@ -107,7 +105,7 @@ export function Header({ lang, view }: Props) {
             </div>
 
             <div className="flex flex-col gap-3">
-              <span className="px-1 text-xs font-medium text-muted-foreground uppercase">{t.settings}</span>
+              <span className="text-sm font-bold tracking-widest text-muted-foreground uppercase">{t.settings}</span>
               <Button variant="outline" className="justify-start" onClick={toggleLang}>
                 <Languages />
                 {t.switchLang}
@@ -121,6 +119,7 @@ export function Header({ lang, view }: Props) {
                 {t.toDesktop}
               </Button>
             </div>
+
           </nav>
         </div>
       )}

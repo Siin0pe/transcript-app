@@ -86,20 +86,18 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
   const isBusy = saving || whisper.status === "recording" || whisper.status === "transcribing"
 
   return (
-    <section id="editor" className="flex scroll-mt-20 flex-col gap-3">
-      <div className="flex h-8 items-center justify-between gap-3 mob:h-auto mob:flex-col mob:items-start mob:gap-1">
-        <h2 className="text-base font-semibold tracking-tight mob:text-lg">
-          {note ? t.editNote : t.newNote}
-        </h2>
+    <section id="editor" className="flex scroll-mt-24 flex-col gap-6">
+      <div className="flex items-end gap-4 mob:flex-wrap mob:gap-2">
+        <h2 className="font-heading text-4xl leading-none font-extrabold uppercase dark:text-yellow">{note ? t.editNote : t.newNote}</h2>
         {note && (
-          <span className="truncate text-xs text-muted-foreground mob:whitespace-normal mob:text-sm">
+          <span className="mb-1 min-w-0 truncate text-lg font-semibold mob:basis-full mob:whitespace-normal">
             {t.editHint(note.title)}
           </span>
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-xl border bg-card p-4">
-        <div className="flex flex-col gap-4 desk:flex-row">
+      <form onSubmit={handleSubmit} className="panel flex flex-col gap-6 p-6 mob:p-4">
+        <div className="flex flex-col gap-6 desk:flex-row">
           <div className="flex flex-1 flex-col gap-2">
             <Label htmlFor="title">{t.title}</Label>
             <Input
@@ -110,10 +108,10 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
               autoComplete="off"
               onChange={handleTitleChange}
             />
-            {titleError && <p className="text-xs text-destructive mob:text-sm">{t.titleRequired}</p>}
+            {titleError && <p className="text-sm font-semibold text-red">{t.titleRequired}</p>}
           </div>
 
-          <div className="flex flex-col gap-2 desk:w-44">
+          <div className="flex flex-col gap-2 desk:w-48">
             <Label>{t.tag}</Label>
             <Select value={tagId} onValueChange={(value) => setTagId(value ?? "none")} items={tagOptions}>
               <SelectTrigger className="w-full">
@@ -143,21 +141,21 @@ export function NoteEditor({ lang, note, tags, onDone }: Props) {
             id="content"
             value={content}
             placeholder={t.contentPlaceholder}
-            className="min-h-56 mob:min-h-48"
+            className="min-h-48"
             onChange={(e) => setContent(e.target.value)}
           />
         </div>
 
-        {saveError && <p className="text-xs text-destructive mob:text-sm">{t.saveFailed}</p>}
+        {saveError && <p className="text-sm font-semibold text-red">{t.saveFailed}</p>}
 
-        <div className="flex items-center gap-2 border-t pt-4 mob:flex-col mob:items-stretch mob:gap-3">
-          <Button type="submit" disabled={isBusy} className="mob:w-full">
+        <div className="flex items-center gap-3 mob:flex-col mob:items-stretch">
+          <Button type="submit" disabled={isBusy}>
             {saving ? t.saving : t.save}
           </Button>
-          <Button type="button" variant="ghost" disabled={saving} className="mob:w-full" onClick={onDone}>
+          <Button type="button" variant="ghost" disabled={saving} onClick={onDone}>
             {t.cancel}
           </Button>
-          <span className="ml-auto text-xs text-muted-foreground mob:mx-auto">{t.chars(content.length)}</span>
+          <span className="ml-auto text-sm text-muted-foreground mob:mx-auto">{t.chars(content.length)}</span>
         </div>
       </form>
     </section>

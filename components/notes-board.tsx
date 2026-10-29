@@ -62,41 +62,42 @@ export function NotesBoard({ lang, notes, tags }: Props) {
   }
 
   return (
-    <main className="flex w-full flex-1 flex-col gap-8 px-4 py-5 desk:mx-auto desk:max-w-6xl desk:gap-10 desk:px-6 desk:py-7">
-      <NoteEditor
-        key={`${editingId ?? "new"}-${formKey}`}
-        lang={lang}
-        note={editingNote}
-        tags={tags}
-        onDone={closeEditor}
-      />
+    <main className="w-full flex-1">
+      <div className="flex flex-col gap-12 px-4 pt-8 desk:mx-auto desk:max-w-6xl desk:px-6 desk:pt-10">
+        <NoteEditor
+          key={`${editingId ?? "new"}-${formKey}`}
+          lang={lang}
+          note={editingNote}
+          tags={tags}
+          onDone={closeEditor}
+        />
 
-      <section id="notes" className="flex scroll-mt-20 flex-col gap-3">
-        <div className="flex h-8 items-center gap-2">
-          <h2 className="text-base font-semibold tracking-tight mob:text-lg">{t.myNotes}</h2>
-          <span className="inline-flex h-5 items-center rounded-full bg-muted px-2 text-xs font-medium">
-            {notes.length}
-          </span>
-        </div>
+        <section id="notes" className="flex scroll-mt-24 flex-col gap-6">
+          <h2 className="font-heading text-4xl leading-none font-extrabold uppercase dark:text-yellow">
+            {t.myNotes} <span className="text-red">{notes.length}</span>
+          </h2>
 
-        {notes.length === 0 && (
-          <p className="rounded-xl border border-dashed px-4 py-8 text-center text-muted-foreground">
-            {t.empty}
-          </p>
-        )}
+          {notes.length === 0 && (
+            <p className="border-2 border-dashed border-foreground px-4 py-10 text-center text-lg font-semibold">
+              {t.empty}
+            </p>
+          )}
 
-        {notes.map((note) => (
-          <NoteCard
-            key={note.id}
-            lang={lang}
-            note={note}
-            isEditing={note.id === editingId}
-            isDeleting={note.id === deletingId}
-            onEdit={() => editNote(note.id)}
-            onDelete={() => removeNote(note.id)}
-          />
-        ))}
-      </section>
+          <div className="grid gap-4 desk:grid-cols-2">
+            {notes.map((note) => (
+              <NoteCard
+                key={note.id}
+                lang={lang}
+                note={note}
+                isEditing={note.id === editingId}
+                isDeleting={note.id === deletingId}
+                onEdit={() => editNote(note.id)}
+                onDelete={() => removeNote(note.id)}
+              />
+            ))}
+          </div>
+        </section>
+      </div>
     </main>
   )
 }

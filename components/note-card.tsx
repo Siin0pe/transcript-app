@@ -22,13 +22,16 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
   return (
     <article
       className={cn(
-        "group flex flex-col gap-1.5 rounded-xl border bg-card p-4 transition-colors desk:hover:border-ring",
-        isEditing && "border-foreground desk:hover:border-foreground"
+        "flex flex-col gap-3 border-2 border-border p-5 text-foreground",
+        isEditing && "panel border-cyan",
+        isDeleting && "border-red"
       )}
     >
-      <div className="flex items-start gap-2">
-        <h3 className="min-w-0 flex-1 leading-7 font-semibold wrap-anywhere mob:text-base">{note.title}</h3>
-        <div className="-mr-1.5 flex shrink-0 gap-1 transition-opacity mob:-my-2 mob:gap-2 desk:opacity-50 desk:group-hover:opacity-100">
+      <div className="flex items-start gap-3">
+        <h3 className="min-w-0 flex-1 font-heading text-3xl leading-[0.9] font-extrabold wrap-anywhere uppercase">
+          {note.title}
+        </h3>
+        <div className="-mt-1 -mr-1 flex shrink-0 gap-1 mob:gap-2">
           <Button variant="ghost" size="icon-sm" title={t.edit} onClick={onEdit}>
             <Pencil />
           </Button>
@@ -41,7 +44,7 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
             <Button
               variant="ghost"
               size="icon-sm"
-              className="text-destructive hover:text-destructive"
+              className="hover:bg-red hover:text-white"
               title={t.remove}
               onClick={onDelete}
             >
@@ -51,20 +54,16 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
         </div>
       </div>
 
-      {note.content && (
-        <p className="line-clamp-2 text-sm text-muted-foreground mob:line-clamp-3 mob:text-base">{note.content}</p>
-      )}
+      {note.content && <p className="line-clamp-3 leading-snug font-medium opacity-80">{note.content}</p>}
 
-      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span className="font-mono">{note.date}</span>
+      <div className="mt-auto flex flex-wrap items-center gap-2 pt-1 text-sm font-semibold uppercase">
+        <span className="mr-auto tracking-wide opacity-70">{note.date}</span>
         {note.tagName && (
-          <span className="inline-flex h-5 items-center rounded-full bg-muted px-2 text-foreground">
-            {note.tagName}
-          </span>
+          <span className="bg-primary px-2 py-0.5 tracking-wider text-primary-foreground">{note.tagName}</span>
         )}
         {note.dictated && (
-          <span className="inline-flex h-5 items-center gap-1 rounded-full border px-2">
-            <Mic className="size-3" />
+          <span className="inline-flex items-center gap-1 bg-cyan px-2 py-0.5 tracking-wider text-ink">
+            <Mic className="size-3.5" />
             {t.dictated}
           </span>
         )}
