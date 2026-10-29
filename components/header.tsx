@@ -7,13 +7,14 @@ import { useTheme } from "next-themes"
 
 import { setLang, setView } from "@/actions/prefs"
 import { Button } from "@/components/ui/button"
-import { dictionaries, type Lang } from "@/lib/i18n"
+import { dictionaries, type Lang, type View } from "@/lib/i18n"
 
 interface Props {
   lang: Lang
+  view: View
 }
 
-export function Header({ lang }: Props) {
+export function Header({ lang, view }: Props) {
   const t = dictionaries[lang]
   const { resolvedTheme, setTheme } = useTheme()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -36,10 +37,9 @@ export function Header({ lang }: Props) {
     setLang(lang === "fr" ? "en" : "fr")
   }
 
-  function chooseView(view: "mobile" | "desktop") {
+  function chooseView(choice: View) {
     closeMenu()
-    const screenView = window.matchMedia("(width >= 48rem)").matches ? "desktop" : "mobile"
-    setView(view === screenView ? null : view)
+    setView(choice)
   }
 
   function toggleTheme() {
@@ -113,10 +113,12 @@ export function Header({ lang }: Props) {
                   {isDark ? <Sun /> : <Moon />}
                   {isDark ? t.themeLight : t.themeDark}
                 </Button>
-                <Button variant="outline" className="justify-start" onClick={() => chooseView("desktop")}>
-                  <Monitor />
-                  {t.toDesktop}
-                </Button>
+                {view === "mobile" && (
+                  <Button variant="outline" className="justify-start" onClick={() => chooseView("desktop")}>
+                    <Monitor />
+                    {t.toDesktop}
+                  </Button>
+                )}
               </div>
             </nav>
           </div>,

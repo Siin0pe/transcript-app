@@ -34,7 +34,7 @@ async function openPage({ lang = "fr", view = "desktop" } = {}) {
   const host = new URL(BASE_URL).hostname
   await context.addCookies([
     { name: "lang", value: lang, domain: host, path: "/" },
-    { name: "view", value: view, domain: host, path: "/" },
+    ...(mobile ? [{ name: "view", value: "mobile", domain: host, path: "/" }] : []),
   ])
   await context.addInitScript(() => localStorage.setItem("theme", "light"))
   const page = await context.newPage()
@@ -166,7 +166,7 @@ ${figure("english", "Figure 7 : version bureau en anglais", "20cm")}
 
 <h2 class="break">3. Détails techniques</h2>
 <h3>Le bouton mobile / bureau</h3>
-<p>Le site est écrit « mobile d'abord » avec Tailwind : les classes de base sont pour le téléphone, et les classes de taille plus grande ajoutent la version bureau. Une media query comme <code>md:</code> ne dépend que de la largeur de l'écran : un bouton ne peut pas forcer la version mobile sur un ordinateur. J'ai donc utilisé les <i>container queries</i> de Tailwind : toute la page est dans un conteneur (<code>@container</code>), et les classes <code>@3xl:</code> s'appliquent quand ce conteneur fait au moins 48rem de large. Sans choix, le conteneur prend la largeur de l'écran et le site est responsive normalement. Le bouton enregistre le choix dans un cookie, et le serveur donne au conteneur une largeur de téléphone (<code>max-w-md</code>) ou d'ordinateur (<code>min-w-5xl</code>). Si on choisit la version qui correspond déjà à l'écran, le cookie est supprimé et le site redevient responsive. Les couleurs sont les variables de shadcn/ui (<code>--background</code>, <code>--primary</code>…), redéfinies pour les thèmes clair et sombre. La langue marche aussi avec un cookie, ce qui permet de traduire ce qui est généré côté serveur, comme les dates.</p>
+<p>Le site est écrit « mobile d'abord » avec Tailwind : les classes de base sont pour le téléphone, et les classes de taille plus grande ajoutent la version bureau. Une media query comme <code>md:</code> ne dépend que de la largeur de l'écran : un bouton ne peut pas forcer la version mobile sur un ordinateur. J'ai donc utilisé les <i>container queries</i> de Tailwind : toute la page est dans un conteneur (<code>@container</code>), et les classes <code>@3xl:</code> s'appliquent quand ce conteneur fait au moins 48rem de large. Sans choix, le conteneur prend la largeur de l'écran et le site est responsive normalement. Le bouton « Version mobile », prévu pour montrer la version téléphone sur un ordinateur, enregistre ce choix dans un cookie, et le serveur limite alors le conteneur à une largeur de téléphone (<code>max-w-md</code>). « Version bureau » supprime le cookie : le site redevient responsive. Les couleurs sont les variables de shadcn/ui (<code>--background</code>, <code>--primary</code>…), redéfinies pour les thèmes clair et sombre. La langue marche aussi avec un cookie, ce qui permet de traduire ce qui est généré côté serveur, comme les dates.</p>
 <h3>La dictée avec Whisper dans le navigateur</h3>
 <p>J'ai choisi de faire tourner Whisper dans le navigateur plutôt que d'envoyer l'audio à une API : pas de clé payante, pas de serveur d'IA, et l'audio reste sur l'ordinateur. J'ai utilisé la bibliothèque <code>browser-whisper</code>, en me basant sur sa documentation et son exemple Next.js. Le code est dans <code>hooks/use-whisper.ts</code>. Les principales difficultés :</p>
 <ul>

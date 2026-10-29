@@ -4,11 +4,10 @@ import { cookies } from "next/headers"
 
 import type { Lang, View } from "@/lib/i18n"
 
-export async function getPrefs(): Promise<{ lang: Lang; view: View | undefined }> {
+export async function getPrefs(): Promise<{ lang: Lang; view: View }> {
   const store = await cookies()
   const lang: Lang = store.get("lang")?.value === "en" ? "en" : "fr"
-  const saved = store.get("view")?.value
-  const view = saved === "mobile" || saved === "desktop" ? saved : undefined
+  const view: View = store.get("view")?.value === "mobile" ? "mobile" : "desktop"
   return { lang, view }
 }
 
@@ -19,8 +18,8 @@ export async function setLang(lang: Lang) {
   cookieStore.set("lang", lang, { maxAge: ONE_YEAR })
 }
 
-export async function setView(view: View | null) {
+export async function setView(view: View) {
   const cookieStore = await cookies()
-  if (view) cookieStore.set("view", view, { maxAge: ONE_YEAR })
+  if (view === "mobile") cookieStore.set("view", view, { maxAge: ONE_YEAR })
   else cookieStore.delete("view")
 }

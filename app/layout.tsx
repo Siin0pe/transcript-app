@@ -47,10 +47,9 @@ export default async function RootLayout({
             className={cn(
               "@container flex min-h-svh flex-col",
               view === "mobile" && "mx-auto max-w-md",
-              view === "desktop" && "min-w-5xl",
             )}
           >
-            <Header lang={lang} />
+            <Header lang={lang} view={view} />
             {children}
             <footer className="mt-12 bg-card px-4 py-5 text-center text-sm tracking-wide text-card-foreground uppercase">
               © 2026{" "}
