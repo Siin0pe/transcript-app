@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import { Languages, Menu, Monitor, Moon, Smartphone, Sun, X } from "lucide-react"
 import { useTheme } from "next-themes"
+import { cn } from "cn"
 
 import { setLang, setView } from "@/actions/prefs"
 import { Button } from "@/components/ui/button"
@@ -75,7 +76,12 @@ export function Header({ lang, view }: Props) {
 
       {menuOpen &&
         createPortal(
-          <div className="fixed inset-y-0 left-1/2 z-30 w-full max-w-md -translate-x-1/2 overflow-hidden">
+          <div
+            className={cn(
+              "fixed z-30 overflow-hidden",
+              view === "mobile" ? "inset-y-0 left-1/2 w-full max-w-md -translate-x-1/2" : "inset-0",
+            )}
+          >
             <div className="absolute inset-0 bg-black/70" onClick={closeMenu} />
 
             <nav className="absolute inset-y-0 right-0 flex w-80 max-w-[85%] flex-col gap-8 border-l-4 border-primary bg-card p-5 text-card-foreground">

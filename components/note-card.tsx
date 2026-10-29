@@ -24,7 +24,7 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
       className={cn(
         "flex flex-col gap-3 border-2 p-5",
         isEditing ? "bg-card text-card-foreground" : "border-border",
-        isDeleting ? "border-destructive" : isEditing && "border-ring"
+        isDeleting ? "border-destructive" : isEditing && "border-ring",
       )}
     >
       <div className="flex items-start gap-3">
@@ -58,9 +58,7 @@ export function NoteCard({ lang, note, isEditing, isDeleting, onEdit, onDelete }
 
       <div className="mt-auto flex flex-wrap items-center gap-2 pt-1 text-sm font-semibold uppercase">
         <span className="mr-auto tracking-wide opacity-70">{note.date}</span>
-        {note.tagName && (
-          <span className="bg-primary px-2 py-0.5 tracking-wider text-primary-foreground ring-2 ring-border">{note.tagName}</span>
-        )}
+        {note.tagName && <span className="border border-current px-2 py-0.5 tracking-wider">{note.tagName}</span>}
         {note.dictated && (
           <span className="inline-flex items-center gap-1 bg-ring px-2 py-0.5 tracking-wider text-primary-foreground">
             <Mic className="size-3.5" />
